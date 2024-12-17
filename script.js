@@ -110,7 +110,7 @@ function reduceMatrix(matrix) {
 function posterizeImage(matrix) {
   const container = document.getElementById("poster");
   let sqValue = getDimensions(container);
-  let dotsize = Math.round(sqValue / 5);
+  let dotsize = parseInt(sqValue / 5);
   sqValue = dotsize * 5;
   let sqSize = sqValue.toString() + "px";
   composeImage(container, sqSize, dotsize, matrix);
