@@ -8,25 +8,19 @@ function initCanvas() {
   return ctx;
 }
 
-function loadImage() {
+function getImageData() {
   const image = new Image();
-  image.src = "./img/headphones-3683983_1920.jpg";
+  image.src = "img/colosseum-2030639_1920.jpg";
   image.onload = function () {
     context.drawImage(image, 0, 0, 600, 400);
     imageData = context.getImageData(0, 0, 600, 400);
-  };
-}
-
-function getImageData() {
-  loadImage();
-  setTimeout(() => {
     greyValues = processColorValues();
     let [min, max] = getMinMax();
     normalizeValues(min, max);
     let matrix = produceMatrix();
     matrix = reduceMatrix(matrix);
-    console.log(matrix);
-  }, 1000);
+    posterizeImage(matrix);
+  };
 }
 
 function processColorValues() {
@@ -44,15 +38,15 @@ function processColorValues() {
 }
 
 function getMinMax() {
-  let sortedValues = greyValues.toSorted();
+  let sortedValues = greyValues.toSorted((a, b) => a - b);
   let min = sortedValues[0];
   let max = sortedValues[sortedValues.length - 1];
   return [min, max];
 }
 
 function normalizeValues(dark, light) {
-  dark += 10;
-  light -= 10;
+  dark += 0;
+  light -= 0;
   let step = (light - dark) / 5;
   for (let i = 0; i < greyValues.length; i++) {
     if (greyValues[i] > light) {
@@ -81,16 +75,16 @@ function normalizeValues(dark, light) {
 function produceMatrix() {
   let matrix = [];
   let counter = 0;
-  for (i = 0; i < 40; i += 1) {
+  for (i = 0; i < 80; i += 1) {
     matrix.push([]);
-    for (j = 0; j < 60; j += 1) {
+    for (j = 0; j < 120; j += 1) {
       matrix[i].push([]);
     }
   }
-  for (i = 0; i < 40; i += 1) {
-    for (x = 0; x < 10; x++) {
-      for (j = 0; j < 60; j += 1) {
-        for (y = 0; y < 10; y++) {
+  for (i = 0; i < 80; i += 1) {
+    for (x = 0; x < 5; x++) {
+      for (j = 0; j < 120; j += 1) {
+        for (y = 0; y < 5; y++) {
           matrix[i][j].push(greyValues[counter]);
           counter++;
         }
@@ -107,13 +101,43 @@ function reduceMatrix(matrix) {
         (accumulator, currentValue) => accumulator + currentValue,
         0
       );
-      matrix[i][j] = Math.round(sum / 100);
+      matrix[i][j] = Math.round(sum / 25);
     }
   }
   return matrix;
 }
 
-function posterizeImage() {}
+function posterizeImage(matrix) {
+  const container = document.getElementById("poster");
+  let sqValue = getDimensions(container);
+  let dotsize = Math.round(sqValue / 5);
+  sqValue = dotsize * 5;
+  let sqSize = sqValue.toString() + "px";
+  composeImage(container, sqSize, dotsize, matrix);
+}
+
+function composeImage(container, sqSize, dotsize, matrix) {
+  for (i = 0; i < matrix.length; i++) {
+    const row = elementBuilder(container, "div", "row");
+    for (j = 0; j < matrix[i].length; j++) {
+      const tile = elementBuilder(row, "div", "tile");
+      tile.style.width = sqSize;
+      tile.style.height = sqSize;
+      const dot = elementBuilder(tile, "div", "dot");
+      let currentDotSize = (dotsize * matrix[i][j]).toString() + "px";
+      dot.style.width = currentDotSize;
+      dot.style.height = currentDotSize;
+      dot.style.backgroundColor = "black";
+    }
+  }
+}
+
+function getDimensions(element) {
+  const rect = element.getBoundingClientRect();
+  let sqWidth = rect.width / 120;
+  let sqHeight = rect.height / 80;
+  return parseInt(Math.min(sqWidth, sqHeight));
+}
 
 function getLValue(r, g, b) {
   r = r / 255;
@@ -125,4 +149,12 @@ function getLValue(r, g, b) {
   let lightness = (cmax + cmin) / 2;
   lightness = +(lightness * 100).toFixed(1);
   return lightness;
+}
+
+function elementBuilder(parent, childType, childClass, childID = "") {
+  let child = document.createElement(childType);
+  child.className = childClass;
+  child.id = childID;
+  parent.appendChild(child);
+  return child;
 }
