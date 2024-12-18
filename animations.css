@@ -1,5 +1,5 @@
 .growdot {
-  animation: grow 2s linear forwards;
+  animation: grow 1500ms linear forwards;
 }
 
 @keyframes grow {
@@ -14,5 +14,5 @@
 }
 
 .shrinkdot {
-  transition: all 2400ms;
+  transition: all 1000ms;
 }
