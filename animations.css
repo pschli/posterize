@@ -16,8 +16,3 @@
 .shrinkdot {
   transition: all 2400ms;
 }
-
-.reshapedot {
-  border-radius: 0;
-  transition: border-radius 3200ms;
-}
