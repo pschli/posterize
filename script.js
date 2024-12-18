@@ -10,7 +10,7 @@ function initCanvas() {
 
 function getImageData() {
   const image = new Image();
-  image.src = "img/colosseum-2030639_1920.jpg";
+  image.src = "img/bridge-5624104_640.jpg";
   image.onload = function () {
     context.drawImage(image, 0, 0, 600, 400);
     imageData = context.getImageData(0, 0, 600, 400);
@@ -45,8 +45,8 @@ function getMinMax() {
 }
 
 function normalizeValues(dark, light) {
-  dark += 0;
-  light -= 0;
+  dark += 10;
+  light -= 10;
   let step = (light - dark) / 5;
   for (let i = 0; i < greyValues.length; i++) {
     if (greyValues[i] > light) {
@@ -110,7 +110,7 @@ function reduceMatrix(matrix) {
 function posterizeImage(matrix) {
   const container = document.getElementById("poster");
   let sqValue = getDimensions(container);
-  let dotsize = parseInt(sqValue / 5);
+  let dotsize = sqValue / 5;
   sqValue = dotsize * 5;
   let sqSize = sqValue.toString() + "px";
   composeImage(container, sqSize, dotsize, matrix);

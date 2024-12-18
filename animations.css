@@ -1,0 +1,23 @@
+.growdot {
+  animation: grow 2s linear forwards;
+}
+
+@keyframes grow {
+  0% {
+    border-radius: 100%;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+}
+
+.shrinkdot {
+  transition: all 2400ms;
+}
+
+.reshapedot {
+  border-radius: 0;
+  transition: border-radius 3200ms;
+}
